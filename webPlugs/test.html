@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<allow-access-from domain="*" />
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- 引入 ECharts 文件 -->
+    <script src="echarts/echarts.min.js"></script>
+    <script src="echarts/echarts-wordcloud.min.js"></script>
+    <script src="echarts/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+    <div id="main" style="width:600px;height:400px"></div>
+    <script type="text/javascript">
+        iid = "211"
+        name = "id"
+        var reg = new RegExp("(^|&|\\?)" + name + "=([^&]*)(&|$)", "i")
+        iid = window.location.href.match(reg)[2]
+        var myChart = echarts.init(document.getElementById('main'));
+        var option = {
+            tooltip: {},
+            series: [{
+                type: 'wordCloud',
+                sizeRange: [12,50],
+                rotationRange:[0,20],
+                shap:'triangle',
+                textStyle: {
+                    normal: {
+                        color: function(){
+                            return 'rgb(' + [
+                                Math.round(Math.random() * 160),
+                                Math.round(Math.random() * 160),
+                                Math.round(Math.random() * 160)
+                            ].join(',')+')';
+                        }
+                    },
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowColor: '#333'
+                    }
+                },
+                data: []
+            }]
+        };
+        myChart.showLoading();
+        callback = "jsonp2375"
+
+
+
+        $.ajax({
+            url: "https://tx.xujipm.com/getwords.py",
+            type: 'GET',
+            dataType: 'json',
+            crossDomain: true,
+            data: {
+                iid: iid
+            },
+            success: function (data) {
+                myChart.setOption(option);
+                for (var name in data.list.fenci) {
+                    if(name.length>1){
+                        option.series[0].data.push({
+                            name: name,
+                            value: data.list.fenci[name]
+                        });
+                    }
+                }
+                myChart.hideLoading();
+                myChart.setOption(option);
+            },
+            error: function() { alert("data.result") }
+        });
+
+function getWords(){
+    $.ajax({
+        url: "https://tx.xujipm.com/getwords.py",
+        type: 'GET',/*
+        jsonp: "callback",*/
+        dataType: 'json',/*
+        jsonpCallback: "jsonp2375",*/
+        contentType: "application/json; charset=utf-8",
+        crossDomain: true,
+        async: true,
+        data: {
+            iid: iid
+        },
+        success: function (data) {
+            //console.log(data.result,option.series[0].data.length,data.list.fenci)
+
+            if(data.list.fenci=="waite"||Object.keys(data.list.fenci).length==0){
+                setTimeout(function(){getWords()},1000);
+            }else{
+                for (var name in data.list.fenci) {
+                    console.log(name,name.length)
+                    if(length(name)>1){
+                        option.series[0].data.push({
+                            name: name,
+                            value: data.list.fenci[name]
+                        });
+                    }
+                }
+                myChart.hideLoading();
+                myChart.setOption(option);
+            }
+        },
+        error: function(q,ts,et) { 
+            console.log(ts+":"+et);
+        }
+    });
+}
+      /*  $.get('http://123.56.217.179:10000/getwords.py?iid=44236805503').done(function (data) {
+            myChart.hideLoading();
+            myChart.setOption(option);
+        });*/
+
+       /* option.series[0].data.push({
+            name: "添加测试",
+            value: 222
+        })*/
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{
+"name": "tb",
+"version": "1.0",
+"manifest_version": 2,
+/*"background": {
+    "page": "background.html"
+    //"scripts": ["test.js"]
+},*/
+"page_action":{
+    "name": "Taobao",
+    "default_icon": "icon.png"
+    //"default_popup": "popup.html"
+},
+"description": "A easy way to Use Taobao",
+/*"browser_action": {
+    //"default_icon": "hotpot.png",
+    "default_popup": "popup.html",
+    "name": "test"
+},*/
+"permissions": [
+    "activeTab",
+    "tabs",
+    "notifications",
+    "http://*.tmall.com/",
+    "https://*.tmall.com/",
+    "http://*.taobao.com/",
+    "https://*.taobao.com/",
+    "http://tx.xujipm.com/",
+    "https://tx.xujipm.com/"
+],
+"homepage_url": "https:xujipm.com",
+"content_scripts":[{
+    "matches":[
+        "https://*.taobao.com/*",
+        "http://*.taobao.com/*",
+        "https://*.tmall.com/*",
+        "http://*.tmall.com/*",
+        "https://*.tmall.hk/*",
+        "http://*.tmall.hk/*"
+    ],
+    "js":["echarts.min.js","echarts-wordcloud.min.js","jquery-3.1.1.min.js","content_script.js"]
+}]
+}
